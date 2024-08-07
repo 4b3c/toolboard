@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolBoard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .project-container {
+            display: flex;
+            flex-direction: row;
+        }
+        .project {
+            border: 3px solid #ccc;
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            margin: 10px;
+            text-align: center;
+            padding: 10px;
+        }
+        .spacer {
+            height: 100px;
+        }
+    </style>
+</head>
+<body style="padding: 2%;">
+    <h1>Welcome to ToolBoard</h1>
+    <a href="/create_tool" class="btn btn-primary mt-3">Create a new tool!</a>
+    <a href="/create_layout" class="btn btn-primary mt-3">Create a new layout!</a>
+    
+    <div class="spacer"></div>
+
+    <h1>Your Projects</h1>
+    <div class="project-container">
+        {% for layout in layouts %}
+            <div class="project">{{ layout.id }}</div>
+        {% endfor %}
+    </div>
+</body>
+</html>

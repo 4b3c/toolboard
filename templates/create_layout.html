@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Layout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .tool-list {
+            margin-top: 20px;
+        }
+        .tool-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .tool-list-container {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center; /* Center items vertically */
+            height: 60px; /* Set a specific height */
+        }
+        .input-field {
+            width: 120px; /* Adjust width here */
+            margin-right: 15px;
+        }
+        .short {
+            width: 70px;
+        }
+        .select-tool {
+            width: 180px; /* Adjust width for select box */
+            margin-right: 15px;
+        }
+        .input-label {
+            margin: 0; /* Remove margin */
+            padding: 10px; /* Remove padding */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1 class="mt-5">Create New Layout</h1>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form id="layout-form" method="POST">
+            <input type="hidden" name="tools" id="tools-input">
+            <div class="tool-list">
+                <h3>Tools</h3>
+                <div class="tool-list-container">
+                    <label for="tool-select" class="input-label">Tool: </label>
+                    <select class="form-control select-tool" id="tool-select">
+                        <option value="">-- Select Tool --</option>
+                        {% for tool in tools %}
+                            <option value="{{ tool.id }}">{{ tool.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label class="input-label">X: </label>
+                    <input type="number" class="form-control input-field short" id="x-input" placeholder="X">
+                    
+                    <label class="input-label">Y: </label>
+                    <input type="number" class="form-control input-field short" id="y-input" placeholder="Y">
+                    
+                    <label class="input-label">Width: </label>
+                    <input type="number" class="form-control input-field" id="w-input" placeholder="Width">
+                    
+                    <label class="input-label">Height: </label>
+                    <input type="number" class="form-control input-field" id="h-input" placeholder="Height">
+
+                    <button type="button" class="btn btn-primary" id="add-tool">+</button>
+                </div>
+
+                <div id="tool-list"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success mt-3">Create Layout</button>
+        </form>
+
+        <h2 class="mt-5"> Layouts:</h2>
+        {% for layout in layouts %}
+            <div>{{ layout.id }} : {{ layout.tools }}</div>
+        {% endfor %}
+
+        <a href="/" class="btn btn-primary mt-3">Done</a>
+
+    </div>
+
+    <script>
+        const toolList = document.getElementById('tool-list');
+        const addToolButton = document.getElementById('add-tool');
+        const toolsInput = document.getElementById('tools-input');
+
+        addToolButton.addEventListener('click', () => {
+            const toolSelect = document.getElementById('tool-select');
+            const selectedTool = toolSelect.options[toolSelect.selectedIndex].text;
+            const x = document.getElementById('x-input').value;
+            const y = document.getElementById('y-input').value;
+            const w = document.getElementById('w-input').value;
+            const h = document.getElementById('h-input').value;
+
+            if (selectedTool && x && y && w && h) {
+                // Create a tool object
+                const toolObject = {
+                    tool_name: selectedTool,
+                    x: x,
+                    y: y,
+                    w: w,
+                    h: h
+                };
+
+                // Create a tool item for display
+                const toolItem = document.createElement('div');
+                toolItem.className = 'tool-item';
+                toolItem.innerHTML = `
+                    <span>${JSON.stringify(toolObject)}</span>
+                    <button class="btn btn-danger btn-sm remove-tool">Remove</button>
+                `;
+                toolList.appendChild(toolItem);
+
+                // Add remove functionality
+                toolItem.querySelector('.remove-tool').addEventListener('click', () => {
+                    toolList.removeChild(toolItem);
+                    updateHiddenInput(); // Update the hidden input after removal
+                });
+
+                // Clear inputs after adding
+                toolSelect.value = '';
+                document.getElementById('x-input').value = '';
+                document.getElementById('y-input').value = '';
+                document.getElementById('w-input').value = '';
+                document.getElementById('h-input').value = '';
+
+                updateHiddenInput(); // Update the hidden input after adding
+            } else {
+                alert('Please fill all fields!');
+            }
+        });
+
+        function updateHiddenInput() {
+            const toolsArray = [];
+            const toolItems = toolList.children;
+
+            for (let i = 0; i < toolItems.length; i++) {
+                const toolText = toolItems[i].innerText.split('Remove')[0]; // Get only the tool details
+                const toolDetails = JSON.parse(toolText); // Parse the tool details back to an object
+                toolsArray.push(toolDetails);
+            }
+
+            // Set the value of the hidden input as a JSON string
+            toolsInput.value = JSON.stringify(toolsArray);
+        }
+
+        // Call this function before submitting the form
+        document.getElementById('layout-form').addEventListener('submit', function() {
+            updateHiddenInput();
+        });
+    </script>
+</body>
+</html>

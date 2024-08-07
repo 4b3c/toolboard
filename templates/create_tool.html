@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a new tool!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+
+        <h1 class="mt-5">Create Tool</h1>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="mt-4">
+            <div class="form-group">
+                <label for="name">Tool Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+
+        <h2 class="mt-5"> Tools:</h2>
+        {% for tool in tools %}
+            <div>{{ tool.name }}</div>
+        {% endfor %}
+
+        <a href="/" class="btn btn-primary mt-3">Done</a>
+
+    </div>
+</body>
+</html>
