@@ -68,5 +68,12 @@ def create_layout():
     layouts = Layout.query.all()
     return render_template('create_layout.html', tools=tools, layouts=layouts)
 
+@app.route('/project/<int:layout_id>')
+def project(layout_id):
+    tools = Layout.query.get_or_404(layout_id).tools
+    print(tools)
+
+    return render_template('/project.html', tools=tools)
+
 if __name__ == '__main__':
     app.run(debug=True)

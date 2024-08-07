@@ -34,7 +34,7 @@
     <h1>Your Projects</h1>
     <div class="project-container">
         {% for layout in layouts %}
-            <div class="project">{{ layout.id }}</div>
+            <a href="/project/{{ layout.id }}" class="project">{{ layout.id }}</a>
         {% endfor %}
     </div>
 </body>
