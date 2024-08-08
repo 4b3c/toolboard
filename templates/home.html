@@ -27,14 +27,14 @@
 <body style="padding: 2%;">
     <h1>Welcome to ToolBoard</h1>
     <a href="/create_tool" class="btn btn-primary mt-3">Create a new tool!</a>
-    <a href="/create_layout" class="btn btn-primary mt-3">Create a new layout!</a>
+    <a href="/create_project" class="btn btn-primary mt-3">Create a new project!</a>
     
     <div class="spacer"></div>
 
     <h1>Your Projects</h1>
     <div class="project-container">
-        {% for layout in layouts %}
-            <a href="/project/{{ layout.id }}" class="project">{{ layout.id }}</a>
+        {% for project in projects %}
+            <a href="/project/{{ project.id }}" class="project">{{ project.id }}</a>
         {% endfor %}
     </div>
 </body>

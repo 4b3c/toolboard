@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Layout</title>
+    <title>Create Project</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .tool-list {
@@ -22,30 +22,30 @@
             padding: 10px;
             display: flex;
             flex-direction: row;
-            align-items: center; /* Center items vertically */
-            height: 60px; /* Set a specific height */
+            align-items: center;
+            height: 60px;
         }
         .input-field {
-            width: 120px; /* Adjust width here */
+            width: 120px;
             margin-right: 15px;
         }
         .short {
             width: 70px;
         }
         .select-tool {
-            width: 180px; /* Adjust width for select box */
+            width: 180px;
             margin-right: 15px;
         }
         .input-label {
-            margin: 0; /* Remove margin */
-            padding: 10px; /* Remove padding */
+            margin: 0;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
 
-        <h1 class="mt-5">Create New Layout</h1>
+        <h1 class="mt-5">Create New Project</h1>
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -54,7 +54,7 @@
             {% endif %}
         {% endwith %}
 
-        <form id="layout-form" method="POST">
+        <form id="project-form" method="POST">
             <input type="hidden" name="tools" id="tools-input">
             <div class="tool-list">
                 <h3>Tools</h3>
@@ -84,12 +84,12 @@
                 <div id="tool-list"></div>
             </div>
 
-            <button type="submit" class="btn btn-success mt-3">Create Layout</button>
+            <button type="submit" class="btn btn-success mt-3">Create Project</button>
         </form>
 
-        <h2 class="mt-5"> Layouts:</h2>
-        {% for layout in layouts %}
-            <div>{{ layout.id }} : {{ layout.tools }}</div>
+        <h2 class="mt-5"> Projects:</h2>
+        {% for project in projects %}
+            <div>{{ project.id }} : {{ project.tools }}</div>
         {% endfor %}
 
         <a href="/" class="btn btn-primary mt-3">Done</a>
@@ -162,7 +162,7 @@
         }
 
         // Call this function before submitting the form
-        document.getElementById('layout-form').addEventListener('submit', function() {
+        document.getElementById('project-form').addEventListener('submit', function() {
             updateHiddenInput();
         });
     </script>
