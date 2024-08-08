@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <title>Dashboard</title>
     <style>
         body {
@@ -22,7 +24,7 @@
             padding: 2.5vw;
             box-sizing: border-box;
             overflow: hidden;
-            position: relative; /* Set positioning context for the box */
+            position: relative;
         }
         .dot {
             width: 6px;
@@ -32,19 +34,24 @@
             margin: auto;
         }
         .tool {
-            position: absolute; /* Absolute positioning for dragging */
+            position: absolute;
             background-color: rgb(240, 240, 255);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
-        .widget-title {
+        .tool-title {
             text-align: center;
             font-weight: bold;
             padding: 10px;
             background-color: rgb(212, 212, 212);
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
+        }
+        .nav-bar {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
         }
     </style>
 </head>
@@ -61,6 +68,12 @@
             }
         </script>
     </div>
+
+    <div class="nav-bar">
+        <a href="/edit_project/{{ project_id }}" class="btn btn-primary mt-3">Edit</a>
+        <a href="/" class="btn btn-primary mt-3">Home</a>
+    </div>
+
     <script>
         class Tool {
             constructor(name, x, y, w, h) {
@@ -73,7 +86,6 @@
             }
 
             createElement() {
-                // Create the main widget element
                 this.element = document.createElement('div');
                 this.element.className = 'tool';
                 this.element.style.left = `${this.x * 0.05 * window.innerWidth}px`;
@@ -81,9 +93,8 @@
                 this.element.style.width = `${this.width * 0.05 * window.innerWidth}px`;
                 this.element.style.height = `${this.height * 0.05 * window.innerWidth}px`;
 
-                // Add widget name
                 const nameLabel = document.createElement('div');
-                nameLabel.className = 'widget-title'
+                nameLabel.className = 'tool-title'
                 nameLabel.textContent = this.name;
                 this.element.appendChild(nameLabel);
 
@@ -104,7 +115,6 @@
             }
         }
 
-        // Function to snap widget to nearest dots
         function snapToDots(element) {
             const grid = document.getElementById('grid');
             const gridRect = grid.getBoundingClientRect();
@@ -129,10 +139,9 @@
             toolsArray.push(new Tool(tools[i].tool_name, tools[i].x, tools[i].y, tools[i].w, tools[i].h));
         }
 
-        // Example of retrieving details from a widget
-        widgets.forEach(widget => {
-            snapToDots(widget.element);
-            console.log(widget.getDetails());
+        tools.forEach(tool => {
+            snapToDots(tool.element);
+            console.log(tool.getDetails());
         });
     </script>
 </body>

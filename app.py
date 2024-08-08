@@ -71,9 +71,23 @@ def create_project():
 @app.route('/project/<int:project_id>')
 def project(project_id):
     tools = Project.query.get_or_404(project_id).tools
-    print(tools)
 
-    return render_template('/project.html', tools=tools)
+    return render_template('/project.html', tools=tools, project_id=project_id)
+
+@app.route('/edit_project/<int:project_id>', methods=['GET', 'POST'])
+def edit_project(project_id):
+    if request.method == 'POST':
+        tools_json = request.form.get('tools')
+        tools_list = json.loads(tools_json)
+        tools_list = [{k: int(v) if k != 'tool_name' else v for k, v in tool_dict.items()} for tool_dict in tools_list]
+
+        Project.query.get_or_404(project_id).tools = tools_list
+        db.session.commit()
+
+    tools = Project.query.get_or_404(project_id).tools
+
+    return render_template('/edit_project.html', tools=tools, project_id=project_id)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

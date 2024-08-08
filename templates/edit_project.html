@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(202, 164, 120);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 5vw);
+            grid-auto-rows: 5vw;
+            width: 100vw;
+            height: 100vh;
+            padding: 2.5vw;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative; /* Set positioning context for the box */
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: black;
+            border-radius: 50%;
+            margin: auto;
+        }
+        .tool {
+            position: absolute;
+            background-color: rgb(240, 240, 255);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .resize-handle {
+            width: 14px;
+            height: 14px;
+            position: absolute;
+            cursor: nwse-resize;
+            bottom: 0px;
+            right: 0px;
+            background-color: rgb(212, 212, 212);
+            border-radius: 2px;
+            border-bottom-right-radius: 10px;
+        }
+        .tool-title {
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+            background-color: rgb(212, 212, 212);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            cursor: pointer;
+        }
+        .nav-bar {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid" id="grid">
+        <!-- Generate dots -->
+        <script>
+            const gridElement = document.getElementById('grid');
+            const numDots = Math.floor((window.innerWidth / 5) * (window.innerHeight / 5));
+            for (let i = 0; i < numDots; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                gridElement.appendChild(dot);
+            }
+        </script>
+    </div>
+
+
+    <form id="project-form" method="POST">
+        <input type="hidden" name="tools" id="tools-input">
+    </form>
+
+    <div class="nav-bar">
+        <button class="btn btn-primary mt-3" id="save-project">Save</button>
+        <a href="/" class="btn btn-primary mt-3">Home</a>
+    </div>
+    
+    <script>
+        const saveButton = document.getElementById('save-project');
+        const toolsInput = document.getElementById('tools-input')
+        let toolDetails = [];
+
+        saveButton.addEventListener('click', (event) => {
+            toolDetails = [];
+            toolsArray.forEach(tool => {
+                toolDetails.push(tool.getDetails());
+            });
+            toolsInput.value = JSON.stringify(toolDetails);
+            document.getElementById('project-form').submit();
+        });
+    </script>
+    
+    <script>
+        class Tool {
+            constructor(name, x, y, w, h) {
+                this.name = name;
+                this.x = x;
+                this.y = y;
+                this.width = w;
+                this.height = h;
+                this.createElement();
+            }
+
+            createElement() {
+                this.element = document.createElement('div');
+                this.element.className = 'tool';
+                this.element.style.left = `${this.x * 0.05 * window.innerWidth}px`;
+                this.element.style.top = `${this.y * 0.05 * window.innerWidth}px`;
+                this.element.style.width = `${this.width * 0.05 * window.innerWidth}px`;
+                this.element.style.height = `${this.height * 0.05 * window.innerWidth}px`;
+
+                const nameLabel = document.createElement('div');
+                nameLabel.className = 'tool-title'
+                nameLabel.textContent = this.name;
+                this.element.appendChild(nameLabel);
+
+                document.body.appendChild(this.element);
+
+                this.nameLabel = nameLabel;
+
+                // Create a single resize handle at the bottom-right
+                this.createResizeHandle();
+                this.initDragging();
+            }
+
+            createResizeHandle() {
+                const handle = document.createElement('div');
+                handle.className = 'resize-handle';
+                this.element.appendChild(handle);
+                this.initResizing(handle);
+            }
+
+            initDragging() {
+                let isDragging = false;
+                let offsetX, offsetY;
+
+                this.nameLabel.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    offsetX = e.clientX - this.element.getBoundingClientRect().left;
+                    offsetY = e.clientY - this.element.getBoundingClientRect().top;
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const newLeft = e.clientX - offsetX;
+                        const newTop = e.clientY - offsetY;
+                        this.element.style.left = `${newLeft}px`;
+                        this.element.style.top = `${newTop}px`;
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        snapToDots(this); // Call snapToDots function to align to grid
+                        isDragging = false;
+                    }
+                });
+            }
+
+            initResizing(handle) {
+                let isResizing = false;
+
+                handle.addEventListener('mousedown', (e) => {
+                    e.stopPropagation(); // Prevent dragging when resizing
+                    isResizing = true;
+
+                    const startWidth = this.element.offsetWidth;
+                    const startHeight = this.element.offsetHeight;
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+
+                    const resizeMouseMove = (e) => {
+                        if (isResizing) {
+                            requestAnimationFrame(() => {
+                                const widthChange = e.clientX - startX;
+                                const heightChange = e.clientY - startY;
+                                this.element.style.width = `${startWidth + widthChange}px`;
+                                this.element.style.height = `${startHeight + heightChange}px`;
+                            });
+                        }
+                    };
+
+                    const resizeMouseUp = () => {
+                        if (isResizing) {
+                            snapToDots(this); // Snap after resizing
+                        }
+                        isResizing = false;
+                        document.removeEventListener('mousemove', resizeMouseMove);
+                        document.removeEventListener('mouseup', resizeMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', resizeMouseMove);
+                    document.addEventListener('mouseup', resizeMouseUp);
+                });
+            }
+
+            getDetails() {
+                return {
+                    tool_name: this.name,
+                    x: this.x,
+                    y: this.y,
+                    w: this.width,
+                    h: this.height,
+                };
+            }
+        }
+
+        function snapToDots(tool) {
+            const element = tool.element;
+            const style = element.style;
+            const grid = document.getElementById('grid');
+            const gridRect = grid.getBoundingClientRect();
+            const boxRect = element.getBoundingClientRect();
+
+            // Calculate the new left and top positions, ensuring they snap correctly
+            let newLeft = Math.round((boxRect.left - 0.05 * window.innerWidth) / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth) + 0.05 * window.innerWidth;
+            let newTop = Math.round((boxRect.top - 0.05 * window.innerWidth) / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth) + 0.05 * window.innerWidth;
+            let newWidth = Math.round(boxRect.width / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth);
+            let newHeight = Math.round(boxRect.height / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth);
+            
+            style.left = `${newLeft}px`;
+            style.top = `${newTop}px`;
+            style.width = `${newWidth}px`;
+            style.height = `${newHeight}px`;
+
+            tool.x = Math.round(newLeft / (0.05 * window.innerWidth));
+            tool.y = Math.round(newTop / (0.05 * window.innerWidth));
+            tool.width = Math.round(newWidth / (0.05 * window.innerWidth));
+            tool.height = Math.round(newHeight / (0.05 * window.innerWidth));
+
+        }
+
+        const toolsArray = []
+        const tools = {{ tools | tojson }};
+        for (let i = 0; i < tools.length; i++) {
+            toolsArray.push(new Tool(tools[i].tool_name, tools[i].x, tools[i].y, tools[i].w, tools[i].h));
+        }
+
+        toolsArray.forEach(tool => {
+            snapToDots(tool);
+            console.log(tool.getDetails());
+        });
+    </script>
+</body>
+</html>
