@@ -5,42 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Project</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .tool-list {
-            margin-top: 20px;
-        }
-        .tool-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .tool-list-container {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-        }
-        .input-field {
-            width: 120px;
-            margin-right: 15px;
-        }
-        .short {
-            width: 70px;
-        }
-        .select-tool {
-            width: 180px;
-            margin-right: 15px;
-        }
-        .input-label {
-            margin: 0;
-            padding: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='create_project.css') }}">
 </head>
 <body>
     <div class="container">
@@ -69,16 +34,16 @@
                             <option value="{{ tool.id }}">{{ tool.name }}</option>
                         {% endfor %}
                     </select>
-                    <label class="input-label">X: </label>
+                    <label class="input-label" for="x-input">X: </label>
                     <input type="number" class="form-control input-field short" id="x-input" placeholder="X">
                     
-                    <label class="input-label">Y: </label>
+                    <label class="input-label" for="y-input">Y: </label>
                     <input type="number" class="form-control input-field short" id="y-input" placeholder="Y">
                     
-                    <label class="input-label">Width: </label>
+                    <label class="input-label" for="w-input">Width: </label>
                     <input type="number" class="form-control input-field" id="w-input" placeholder="Width">
                     
-                    <label class="input-label">Height: </label>
+                    <label class="input-label" for="h-input">Height: </label>
                     <input type="number" class="form-control input-field" id="h-input" placeholder="Height">
 
                     <button type="button" class="btn btn-primary" id="add-tool">+</button>

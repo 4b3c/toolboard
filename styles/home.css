@@ -1,0 +1,17 @@
+
+.project-container {
+    display: flex;
+    flex-direction: row;
+}
+.project {
+    border: 3px solid #ccc;
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    margin: 10px;
+    text-align: center;
+    padding: 10px;
+}
+.spacer {
+    height: 100px;
+}
