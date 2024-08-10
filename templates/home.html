@@ -9,6 +9,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            padding: 2%;
         }
 
         .hover-area {
@@ -30,23 +31,52 @@
             opacity: 1; /* Show button on hover */
         }
 
+        .quick-bar {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .quick-bar-section {
+            margin-right: 4vw;
+            padding: 2%;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+        }
+        .tool-button {
+
+        }
+
     </style>
 </head>
-<body style="padding: 2%;">
-    <h1>Welcome to ToolBoard</h1>
-    <a href="/create_tool" class="btn btn-primary mt-3">Create a new tool!</a>
-    <a href="/create_project" class="btn btn-primary mt-3">Create a new project!</a>
+<body>
+    <div class="quick-bar">
+        <div class="quick-bar-section">
+            <h1>Welcome to ToolBoard</h1>
+            <a href="/create_tool" class="btn btn-primary mt-3">Create a new tool!</a>
+            <a href="/create_project" class="btn btn-primary mt-3">Create a new project!</a>
+        </div>
+        <div class="quick-bar-section">
+            <h1>Your Tools</h1>
+
+            {% for tool in tools %}
+                <a href="/edit_tool/{{ tool.id }}" class="btn btn-primary mt-3">{{ tool.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
     
     <div class="spacer"></div>
 
-    <h1>Your Projects</h1>
-    <div class="project-container">
-        {% for project in projects %}
-            <div class="hover-area">
-                <a href="/project/{{ project.id }}" class="btn project">{{ project.name }}</a>
-                <a href="/delete_project/{{ project.id }}" class="btn btn-danger hidden-button">Delete</a>
-            </div>
-        {% endfor %}
+    <div class="quick-bar-section">
+        <h1>Your Projects</h1>
+
+        <div class="project-container">
+            {% for project in projects %}
+                <div class="hover-area">
+                    <a href="/project/{{ project.id }}" class="btn project">{{ project.name }}</a>
+                    <a href="/delete_project/{{ project.id }}" class="btn btn-danger hidden-button">Delete</a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

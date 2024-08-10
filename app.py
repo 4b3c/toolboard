@@ -42,6 +42,8 @@ class Tool_Instance(db.Model):
             'id': self.id,
             'tool_id': self.tool_id,
             'name': self.tool.name,
+            'script': self.tool.script,
+            'ui_script': self.tool.ui_script,
             'project_id': self.project_id,
             'data': self.data,
             'rect': self.rect
@@ -51,7 +53,8 @@ class Tool_Instance(db.Model):
 @app.route('/')
 def home():
     projects = Project.query.all()
-    return render_template('home.html', projects=projects)
+    tools = Tool.query.all()
+    return render_template('home.html', projects=projects, tools=tools)
 
 @app.route('/create_tool', methods=['GET', 'POST'])
 def create_tool():
@@ -140,6 +143,14 @@ def delete_project(project_id):
         return redirect(url_for('home'))
 
     return render_template('delete_project.html', project=project)
+
+@app.route('/edit_tool/<int:tool_id>', methods=['GET', 'POST'])
+def edit_tool(tool_id):
+    if request.method == 'POST':
+        pass
+
+    tool = Tool.query.get(tool_id)
+    return render_template('edit_tool.html', tool=tool)
 
 if __name__ == '__main__':
     app.run(debug=True)

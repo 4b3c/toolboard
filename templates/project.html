@@ -28,8 +28,9 @@
 
     <script>
         class Tool {
-            constructor(name, id, x, y, w, h) {
+            constructor(name, ui_script, id, x, y, w, h) {
                 this.name = name;
+                this.ui_script = ui_script;
                 this.id = id;
                 this.x = x;
                 this.y = y;
@@ -51,6 +52,7 @@
                 nameLabel.textContent = this.name;
                 this.element.appendChild(nameLabel);
 
+                this.element.innerHTML += this.ui_script;
                 document.body.appendChild(this.element);
 
                 this.nameLabel = nameLabel;
@@ -94,7 +96,7 @@
         for (let i = 0; i < tool_instances.length; i++) {
             let tool_instance = tool_instances[i]
             let rect = tool_instance.rect;
-            toolsArray.push(new Tool(tool_instance.name, tool_instance.id, rect.x, rect.y, rect.w, rect.h));
+            toolsArray.push(new Tool(tool_instance.name, tool_instance.ui_script, tool_instance.id, rect.x, rect.y, rect.w, rect.h));
         }
 
         toolsArray.forEach(tool => {
