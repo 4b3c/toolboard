@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Deletion</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='delete_project.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Confirm Deletion</h1>
+
+        <p>Are you sure you want to delete the project "{{ project.name }}"?</p>
+        
+        <form method="POST">
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+
+</body>
+</html>

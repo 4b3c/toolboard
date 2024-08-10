@@ -124,6 +124,22 @@ def edit_project(project_id):
 
     return render_template('/edit_project.html', tool_instances=tool_instances, project_id=project_id)
 
+@app.route('/delete_project/<int:project_id>', methods=['GET', 'POST'])
+def delete_project(project_id):
+    project = Project.query.get(project_id)
+    if request.method == 'POST':
+        if project:
+            for tool_instance in project.tool_instances:
+                db.session.delete(tool_instance)
+                db.session.commit()
+            db.session.delete(project)
+            db.session.commit()
+            flash('Project deleted successfully!', 'success')
+        else:
+            flash('Project not found.', 'danger')
+        return redirect(url_for('home'))
+
+    return render_template('delete_project.html', project=project)
 
 if __name__ == '__main__':
     app.run(debug=True)

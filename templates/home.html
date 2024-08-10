@@ -6,6 +6,31 @@
     <title>ToolBoard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .hover-area {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            margin: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .hidden-button {
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.3s; /* Smooth transition for opacity */
+            position: absolute; /* Position it relative to the parent */
+            bottom: 30px; /* Adjust position */
+        }
+
+        .hover-area:hover .hidden-button {
+            opacity: 1; /* Show button on hover */
+        }
+
+    </style>
 </head>
 <body style="padding: 2%;">
     <h1>Welcome to ToolBoard</h1>
@@ -17,7 +42,10 @@
     <h1>Your Projects</h1>
     <div class="project-container">
         {% for project in projects %}
-            <a href="/project/{{ project.id }}" class="btn project">{{ project.name }}</a>
+            <div class="hover-area">
+                <a href="/project/{{ project.id }}" class="btn project">{{ project.name }}</a>
+                <a href="/delete_project/{{ project.id }}" class="btn btn-danger hidden-button">Delete</a>
+            </div>
         {% endfor %}
     </div>
 </body>
