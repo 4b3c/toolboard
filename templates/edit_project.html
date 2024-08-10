@@ -86,6 +86,7 @@
     </form>
 
     <div class="nav-bar">
+        <a href="/project/{{ project_id }}" class="btn btn-primary mt-3">Back</a>
         <button class="btn btn-primary mt-3" id="save-project">Save</button>
         <a href="/" class="btn btn-primary mt-3">Home</a>
     </div>
@@ -107,12 +108,13 @@
     
     <script>
         class Tool {
-            constructor(name, x, y, w, h) {
+            constructor(name, id, x, y, w, h) {
                 this.name = name;
+                this.id = id;
                 this.x = x;
                 this.y = y;
-                this.width = w;
-                this.height = h;
+                this.w = w;
+                this.h = h;
                 this.createElement();
             }
 
@@ -121,8 +123,8 @@
                 this.element.className = 'tool';
                 this.element.style.left = `${this.x * 0.05 * window.innerWidth}px`;
                 this.element.style.top = `${this.y * 0.05 * window.innerWidth}px`;
-                this.element.style.width = `${this.width * 0.05 * window.innerWidth}px`;
-                this.element.style.height = `${this.height * 0.05 * window.innerWidth}px`;
+                this.element.style.width = `${this.w * 0.05 * window.innerWidth}px`;
+                this.element.style.height = `${this.h * 0.05 * window.innerWidth}px`;
 
                 const nameLabel = document.createElement('div');
                 nameLabel.className = 'tool-title'
@@ -211,11 +213,14 @@
 
             getDetails() {
                 return {
-                    tool_name: this.name,
-                    x: this.x,
-                    y: this.y,
-                    w: this.width,
-                    h: this.height,
+                    name: this.name,
+                    id: this.id,
+                    rect: {
+                        x: this.x,
+                        y: this.y,
+                        w: this.w,
+                        h: this.h
+                    }
                 };
             }
         }
@@ -240,15 +245,18 @@
 
             tool.x = Math.round(newLeft / (0.05 * window.innerWidth));
             tool.y = Math.round(newTop / (0.05 * window.innerWidth));
-            tool.width = Math.round(newWidth / (0.05 * window.innerWidth));
-            tool.height = Math.round(newHeight / (0.05 * window.innerWidth));
+            tool.w = Math.round(newWidth / (0.05 * window.innerWidth));
+            tool.h = Math.round(newHeight / (0.05 * window.innerWidth));
 
         }
 
         const toolsArray = []
-        const tools = {{ tools | tojson }};
-        for (let i = 0; i < tools.length; i++) {
-            toolsArray.push(new Tool(tools[i].tool_name, tools[i].x, tools[i].y, tools[i].w, tools[i].h));
+        const tool_instances = {{ tool_instances | tojson }};
+        console.log(tool_instances[0])
+        for (let i = 0; i < tool_instances.length; i++) {
+            let tool_instance = tool_instances[i];
+            let rect = tool_instance.rect;
+            toolsArray.push(new Tool(tool_instance.name, tool_instance.id, rect.x, rect.y, rect.w, rect.h));
         }
 
         toolsArray.forEach(tool => {

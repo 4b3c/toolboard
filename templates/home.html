@@ -34,7 +34,7 @@
     <h1>Your Projects</h1>
     <div class="project-container">
         {% for project in projects %}
-            <a href="/project/{{ project.id }}" class="btn project">{{ project.id }}</a>
+            <a href="/project/{{ project.id }}" class="btn project">{{ project.name }}</a>
         {% endfor %}
     </div>
 </body>

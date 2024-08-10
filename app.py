@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import json
@@ -17,11 +17,36 @@ migrate = Migrate(app, db)
 
 class Tool(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    script = db.Column(db.Text, nullable=True)
+    ui_script = db.Column(db.Text, nullable=True)
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    tools = db.Column(db.JSON, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+
+    tool_instances = db.relationship('Tool_Instance', back_populates='project')
+
+class Tool_Instance(db.Model):    
+    id = db.Column(db.Integer, primary_key=True)
+    tool_id = db.Column(db.Integer, db.ForeignKey('tool.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    data = db.Column(db.JSON, nullable=True)  # Store instance-specific data as JSON
+    rect = db.Column(db.JSON, nullable=False) # {'x': 2, 'y': 2, 'w': 5, 'h': 5}
+
+    tool = db.relationship('Tool')
+    project = db.relationship('Project', back_populates='tool_instances')
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'tool_id': self.tool_id,
+            'name': self.tool.name,
+            'project_id': self.project_id,
+            'data': self.data,
+            'rect': self.rect
+        }
+
 
 @app.route('/')
 def home():
@@ -31,7 +56,7 @@ def home():
 @app.route('/create_tool', methods=['GET', 'POST'])
 def create_tool():
     if request.method == 'POST':
-        new_tool = Tool(name=request.form['name'])
+        new_tool = Tool(name=request.form['name'], script=request.form['script'], ui_script=request.form['ui_script'])
 
         try:
             db.session.add(new_tool)
@@ -47,14 +72,25 @@ def create_tool():
 @app.route('/create_project', methods=['GET', 'POST'])
 def create_project():
     if request.method == 'POST':
-        tools_json = request.form.get('tools')
-        tools_list = json.loads(tools_json)
-        tools_list = [{k: int(v) if k != 'tool_name' else v for k, v in tool_dict.items()} for tool_dict in tools_list]
-
-        new_project = Project(tools=tools_list)
+        tools_list = request.form.get('tools')
+        tools_list = json.loads(tools_list)
 
         if tools_list == []:
-            new_project = None
+            flash('Try Adding a tool :)')
+            return redirect(url_for('create_project'))
+        
+        new_project = Project(name=request.form['name'])
+        db.session.add(new_project)
+        db.session.commit()
+
+        for tool in tools_list:
+            new_tool_instance = Tool_Instance(
+                tool_id = int(tool['id']),
+                project_id = new_project.id,
+                data = {},
+                rect = {k: int(tool.get(k, 2)) for k in ['x', 'y', 'w', 'h']}
+            )
+            db.session.add(new_tool_instance)
 
         try:
             db.session.add(new_project)
@@ -70,23 +106,23 @@ def create_project():
 
 @app.route('/project/<int:project_id>')
 def project(project_id):
-    tools = Project.query.get_or_404(project_id).tools
+    tool_instances = [instance.to_json() for instance in Project.query.get_or_404(project_id).tool_instances]
 
-    return render_template('/project.html', tools=tools, project_id=project_id)
+    return render_template('/project.html', tool_instances=tool_instances, project_id=project_id)
 
 @app.route('/edit_project/<int:project_id>', methods=['GET', 'POST'])
 def edit_project(project_id):
     if request.method == 'POST':
-        tools_json = request.form.get('tools')
-        tools_list = json.loads(tools_json)
-        tools_list = [{k: int(v) if k != 'tool_name' else v for k, v in tool_dict.items()} for tool_dict in tools_list]
+        tools_list = request.form.get('tools')
+        tools_list = json.loads(tools_list)
 
-        Project.query.get_or_404(project_id).tools = tools_list
-        db.session.commit()
+        for tool in tools_list:
+            Tool_Instance.query.get_or_404(tool['id']).rect = tool['rect']
+            db.session.commit()
 
-    tools = Project.query.get_or_404(project_id).tools
+    tool_instances = [instance.to_json() for instance in Project.query.get_or_404(project_id).tool_instances]
 
-    return render_template('/edit_project.html', tools=tools, project_id=project_id)
+    return render_template('/edit_project.html', tool_instances=tool_instances, project_id=project_id)
 
 
 if __name__ == '__main__':

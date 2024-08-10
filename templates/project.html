@@ -80,8 +80,8 @@
                 this.name = name;
                 this.x = x;
                 this.y = y;
-                this.width = w;
-                this.height = h;
+                this.w = w;
+                this.h = h;
                 this.createElement();
             }
 
@@ -90,8 +90,8 @@
                 this.element.className = 'tool';
                 this.element.style.left = `${this.x * 0.05 * window.innerWidth}px`;
                 this.element.style.top = `${this.y * 0.05 * window.innerWidth}px`;
-                this.element.style.width = `${this.width * 0.05 * window.innerWidth}px`;
-                this.element.style.height = `${this.height * 0.05 * window.innerWidth}px`;
+                this.element.style.width = `${this.w * 0.05 * window.innerWidth}px`;
+                this.element.style.height = `${this.h * 0.05 * window.innerWidth}px`;
 
                 const nameLabel = document.createElement('div');
                 nameLabel.className = 'tool-title'
@@ -106,16 +106,17 @@
             getDetails() {
                 return {
                     name: this.name,
-                    id: this.id,
                     x: this.x,
                     y: this.y,
-                    width: this.width,
-                    height: this.height,
+                    w: this.w,
+                    h: this.h,
                 };
             }
         }
 
-        function snapToDots(element) {
+        function snapToDots(tool) {
+            const element = tool.element;
+            const style = element.style;
             const grid = document.getElementById('grid');
             const gridRect = grid.getBoundingClientRect();
             const boxRect = element.getBoundingClientRect();
@@ -125,23 +126,24 @@
             let newTop = Math.round((boxRect.top - 0.05 * window.innerWidth) / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth) + 0.05 * window.innerWidth;
             let newWidth = Math.round(boxRect.width / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth);
             let newHeight = Math.round(boxRect.height / (0.05 * window.innerWidth)) * (0.05 * window.innerWidth);
-            console.log(newWidth / window.innerWidth);
             
-            element.style.left = `${newLeft}px`;
-            element.style.top = `${newTop}px`;
-            element.style.width = `${newWidth}px`;
-            element.style.height = `${newHeight}px`;
+            style.left = `${newLeft}px`;
+            style.top = `${newTop}px`;
+            style.width = `${newWidth}px`;
+            style.height = `${newHeight}px`;
         }
 
         const toolsArray = []
-        const tools = {{ tools | tojson }};
-        for (let i = 0; i < tools.length; i++) {
-            toolsArray.push(new Tool(tools[i].tool_name, tools[i].x, tools[i].y, tools[i].w, tools[i].h));
+        const tool_instances = {{ tool_instances | tojson }};
+        for (let i = 0; i < tool_instances.length; i++) {
+            let tool_instance = tool_instances[i]
+            let rect = tool_instance.rect;
+            toolsArray.push(new Tool(tool_instance.name, rect.x, rect.y, rect.w, rect.h));
         }
 
-        tools.forEach(tool => {
-            snapToDots(tool.element);
+        toolsArray.forEach(tool => {
             console.log(tool.getDetails());
+            snapToDots(tool);
         });
     </script>
 </body>
