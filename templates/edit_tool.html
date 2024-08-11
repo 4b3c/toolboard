@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create a new tool!</title>
+    <title>Editting {{ tool.name }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='create_tool.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <style>
+        .CodeMirror {
+            border: 1px solid #ccc;
+            height: auto;
+            min-height: 200px; /* Set a minimum height for the editor */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
 
-        <h1 class="mt-5">Create Tool</h1>
+        <h1 class="mt-5">Edit Tool</h1>
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -25,15 +33,39 @@
                 <input type="text" class="form-control" id="name" name="name" value="{{ tool.name }}" required>
 
                 <label for="script">Script</label>
-                <input type="text" class="form-control" id="script" name="script" value="{{ tool.script }}" required>
+                <textarea id="script" name="script" required>{{ tool.script }}</textarea>
 
                 <label for="ui_script">UI Script</label>
-                <input type="text" class="form-control" id="ui_script" name="ui_script" value="{{ tool.ui_script }}" required>
+                <textarea id="ui_script" name="ui_script" required>{{ tool.ui_script }}</textarea>
             </div>
             <button type="submit" class="btn btn-primary mt-3">Save</button>
             <a href="/" class="btn btn-primary mt-3">Done</a>
         </form>
 
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script>
+        const scriptEditor = CodeMirror.fromTextArea(document.getElementById('script'), {
+            lineNumbers: true,
+            mode: 'javascript',
+            theme: 'default',
+            lineWrapping: true
+        });
+
+        const uiScriptEditor = CodeMirror.fromTextArea(document.getElementById('ui_script'), {
+            lineNumbers: true,
+            mode: 'javascript',
+            theme: 'default',
+            lineWrapping: true
+        });
+
+        // Override the form submission to send the CodeMirror content
+        document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById('script').value = scriptEditor.getValue();
+            document.getElementById('ui_script').value = uiScriptEditor.getValue();
+        });
+    </script>
 </body>
 </html>

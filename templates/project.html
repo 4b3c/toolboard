@@ -42,6 +42,8 @@
             createElement() {
                 this.element = document.createElement('div');
                 this.element.className = 'tool';
+                this.element.style.display = 'flex';
+                this.element.style.flexDirection = 'column';
                 this.element.style.left = `${this.x * 0.05 * window.innerWidth}px`;
                 this.element.style.top = `${this.y * 0.05 * window.innerWidth}px`;
                 this.element.style.width = `${this.w * 0.05 * window.innerWidth}px`;
@@ -52,7 +54,11 @@
                 nameLabel.textContent = this.name;
                 this.element.appendChild(nameLabel);
 
-                this.element.innerHTML += this.ui_script;
+                const toolUI = document.createElement('div');
+                toolUI.style.flexGrow = '1';
+                toolUI.innerHTML += this.ui_script;
+                this.element.appendChild(toolUI)
+
                 document.body.appendChild(this.element);
 
                 this.nameLabel = nameLabel;
@@ -104,5 +110,11 @@
             snapToDots(tool);
         });
     </script>
+
+    {% for tool_instance in tool_instances %}
+        {{ tool_instance.script | safe }}
+    {% endfor %}
+
+
 </body>
 </html>

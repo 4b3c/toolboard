@@ -147,7 +147,17 @@ def delete_project(project_id):
 @app.route('/edit_tool/<int:tool_id>', methods=['GET', 'POST'])
 def edit_tool(tool_id):
     if request.method == 'POST':
-        pass
+        tool = Tool.query.get(tool_id)
+        tool.name=request.form['name']
+        tool.script=request.form['script']
+        tool.ui_script=request.form['ui_script']
+
+        try:
+            db.session.commit()
+            flash('Tool saved successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error saving tool: ' + str(e), 'danger')
 
     tool = Tool.query.get(tool_id)
     return render_template('edit_tool.html', tool=tool)

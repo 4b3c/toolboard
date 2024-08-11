@@ -1,0 +1,62 @@
+<script>
+const calendarElement = document.getElementById('calendar');
+const date = new Date();
+const month = date.getMonth();
+const year = date.getFullYear();
+const firstDay = new Date(year, month, 1).getDay();
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+// Add header
+for (let i = 0; i < 7; i++) {
+    const headerCell = document.createElement('div');
+    headerCell.className = 'cell header';
+    headerCell.textContent = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][i];
+    calendarElement.appendChild(headerCell);
+}
+
+// Add empty cells before the first day
+for (let i = 0; i < firstDay; i++) {
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'cell';
+    calendarElement.appendChild(emptyCell);
+}
+
+// Add day cells
+for (let day = 1; day <= daysInMonth; day++) {
+    const dayCell = document.createElement('div');
+    dayCell.className = 'cell' + (day === date.getDate() ? ' today' : '');
+    dayCell.textContent = day;
+    calendarElement.appendChild(dayCell);
+}
+</script>
+
+
+
+
+
+<div id="calendar" class="calendar-container"></div>
+
+<style>
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Create 7 equal columns */
+    grid-template-rows: repeat(6, 1fr); /* Create 6 equal rows */
+    height: 100%; /* Fill parent height */
+    width: 100%; /* Fill parent width */
+    padding: 10px;
+}
+
+.cell {
+    border: 1px solid #ccc; /* Add border for cells */
+    font-size: 1em; /* Adjust font size */
+  	padding: 5%;
+}
+
+.header {
+    background-color: lightblue;
+}
+
+.today {
+    background-color: lightblue;
+}
+</style>

@@ -6,47 +6,6 @@
     <title>ToolBoard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 2%;
-        }
-
-        .hover-area {
-            display: flex;
-            justify-content: center;
-            position: relative;
-            margin: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .hidden-button {
-            opacity: 0; /* Start hidden */
-            transition: opacity 0.3s; /* Smooth transition for opacity */
-            position: absolute; /* Position it relative to the parent */
-            bottom: 30px; /* Adjust position */
-        }
-
-        .hover-area:hover .hidden-button {
-            opacity: 1; /* Show button on hover */
-        }
-
-        .quick-bar {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .quick-bar-section {
-            margin-right: 4vw;
-            padding: 2%;
-            border: 3px solid #ccc;
-            border-radius: 10px;
-        }
-        .tool-button {
-
-        }
-
-    </style>
 </head>
 <body>
     <div class="quick-bar">
