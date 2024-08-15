@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editting {{ tool.name }}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='create_tool.css') }}">
+{% extends "base.html" %}
+
+{% block title %}<title>Editting {{ tool.name }}</title>{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='edit_tool.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <style>
         .CodeMirror {
@@ -14,8 +11,9 @@
             min-height: 200px; /* Set a minimum height for the editor */
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <div class="container">
 
         <h1 class="mt-5">Edit Tool</h1>
@@ -33,15 +31,14 @@
                 <input type="text" class="form-control" id="name" name="name" value="{{ tool.name }}" required>
 
                 <label for="script">Script</label>
-                <textarea id="script" name="script" required>{{ tool.script }}</textarea>
+                <input type="text" class="form-control" id="script" name="script" required>{{ tool.script }}
 
                 <label for="ui_script">UI Script</label>
-                <textarea id="ui_script" name="ui_script" required>{{ tool.ui_script }}</textarea>
+                <input type="text" class="form-control" id="ui_script" name="ui_script" required>{{ tool.ui_script }}
             </div>
             <button type="submit" class="btn btn-primary mt-3">Save</button>
             <a href="/" class="btn btn-primary mt-3">Done</a>
         </form>
-
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
@@ -67,5 +64,5 @@
             document.getElementById('ui_script').value = uiScriptEditor.getValue();
         });
     </script>
-</body>
-</html>
+
+{% endblock %}

@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='project.css') }}">
-    <title>Dashboard</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}<title>Dashboard</title>{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{{ url_for('static', filename='project.css') }}">{% endblock %}
+
+{% block content %}
     <div class="grid" id="grid">
         <!-- Generate dots -->
         <script>
@@ -116,6 +112,4 @@
         {{ tool_instance.script | safe }}
     {% endfor %}
 
-
-</body>
-</html>
+{% endblock %}

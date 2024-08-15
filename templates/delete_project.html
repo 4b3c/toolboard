@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Deletion</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='delete_project.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}<title>Confirm Deletion</title>{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{{ url_for('static', filename='delete_project.css') }}">{% endblock %}
+
+{% block content %}
     <div class="container mt-5">
         <h1>Confirm Deletion</h1>
 
@@ -19,5 +15,4 @@
         </form>
     </div>
 
-</body>
-</html>
+{% endblock %}

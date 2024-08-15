@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Project</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='create_project.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}<title>Create Project</title>{% endblock %}
+{% block stylesheet %}<link rel="stylesheet" href="{{ url_for('static', filename='create_project.css') }}">{% endblock %}
+
+{% block content %}
     <div class="container">
 
         <h1 class="mt-5">Create New Project</h1>
@@ -136,5 +132,5 @@
             updateHiddenInput();
         });
     </script>
-</body>
-</html>
+
+{% endblock %}
