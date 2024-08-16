@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}<title>Create a new tool!</title>{% endblock %}
+{% block title %}<title>Create a Tool</title>{% endblock %}
 {% block stylesheet %}
     <link rel="stylesheet" href="{{ url_for('static', filename='create_tool.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -16,7 +16,7 @@
 {% block content %}
     <div class="container">
 
-        <h1 class="mt-5">Create Tool</h1>
+        <h1 class="mt-5">Create a Tool</h1>
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -31,19 +31,14 @@
                 <input type="text" class="form-control" id="name" name="name" required>
 
                 <label for="script">Script</label>
-                <input type="text" class="form-control" id="script" name="script" required>
+                <textarea id="script" name="script" style="display: block;"></textarea>
 
                 <label for="ui_script">UI Script</label>
-                <input type="text" class="form-control" id="ui_script" name="ui_script" required>
+                <textarea id="ui_script" name="ui_script" style="display: block;"></textarea>
             </div>
             <button type="submit" class="btn btn-primary mt-3">Save</button>
             <a href="/" class="btn btn-primary mt-3">Done</a>
         </form>
-
-        <h2 class="mt-5"> Tools:</h2>
-        {% for tool in tools %}
-            <div>{{ tool.name }}</div>
-        {% endfor %}
 
     </div>
 
